@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soccer Tournament Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #BCBDC0 0%, #DB3328 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #DB3328, #BCBDC0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .tournament-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #DB3328;
+        }
+
+        .tournament-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .tournament-info ul {
+            color: #666;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .tournament-info li {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tournament-info li:before {
+            content: "⚽";
+            position: absolute;
+            left: 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #DB3328;
+            box-shadow: 0 0 0 3px rgba(219, 51, 40, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .radio-option:hover {
+            border-color: #DB3328;
+            background: #fdf2f2;
+        }
+
+        .radio-option input[type="radio"] {
+            margin: 0;
+        }
+
+        .radio-option input[type="radio"]:checked + span {
+            color: #DB3328;
+            font-weight: 600;
+        }
+
+        .radio-option:has(input[type="radio"]:checked) {
+            border-color: #DB3328;
+            background: #fdf2f2;
+        }
+
+        #congregation-group {
+            transition: all 0.3s ease;
+        }
+
+        #congregation-group.hidden {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #DB3328, #BCBDC0);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(219, 51, 40, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #DB3328;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e0e0e0;
+            border-top: 2px solid #DB3328;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+            }
+            
+            .radio-option {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://drive.google.com/uc?export=view&id=18IzfnpSiabGcOHD5I55A4f9NQ04EhTbW" alt="Tournament Logo" class="logo">
+            <h1>⚽ Soccer Tournament</h1>
+            <p>Registration Form</p>
+        </div>
+
+        <div class="tournament-info">
+            <h3>Tournament Details</h3>
+            <ul>
+                <li><strong>Adults:</strong> 7-a-side (1 female player required)</li>
+                <li><strong>Kids:</strong> Random team assignment</li>
+                <li><strong>Time:</strong> 1:30 PM - 5:00 PM</li>
+                <li><strong>Format:</strong> Knockout tournament</li>
+            </ul>
+        </div>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="fullName">Full Name <span class="required">*</span></label>
+                <input type="text" id="fullName" name="fullName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address <span class="required">*</span></label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+
+            <div class="form-group">
+                <label>Tournament <span class="required">*</span></label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="adults" name="tournament" value="adults" required>
+                        <span>Adults</span>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="kids" name="tournament" value="kids" required>
+                        <span>Kids</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Gender <span class="required">*</span></label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="male" name="gender" value="male" required>
+                        <span>Male</span>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="female" name="gender" value="female" required>
+                        <span>Female</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" id="congregation-group">
+                <label for="congregation">Congregation <span class="required">*</span></label>
+                <select id="congregation" name="congregation">
+                    <option value="">Select your congregation</option>
+                    <option value="Concord">Concord</option>
+                    <option value="Eastwood">Eastwood</option>
+                    <option value="Homebush Bay">Homebush Bay</option>
+                    <option value="Kellyville">Kellyville</option>
+                    <option value="Kogarah">Kogarah</option>
+                    <option value="Rhodes">Rhodes</option>
+                    <option value="Strathfield">Strathfield</option>
+                    <option value="Willoughby">Willoughby</option>
+                </select>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                Register for Tournament
+            </button>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <span>Submitting registration...</span>
+            </div>
+
+            <div class="message" id="message"></div>
+        </form>
+    </div>
+
+    <script>
+        // Handle tournament type change
+        const tournamentRadios = document.querySelectorAll('input[name="tournament"]');
+        const congregationGroup = document.getElementById('congregation-group');
+        const congregationSelect = document.getElementById('congregation');
+
+        tournamentRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'kids') {
+                    congregationGroup.classList.add('hidden');
+                    congregationSelect.removeAttribute('required');
+                    congregationSelect.value = '';
+                } else {
+                    congregationGroup.classList.remove('hidden');
+                    congregationSelect.setAttribute('required', '');
+                }
+            });
+        });
+
+        // Handle form submission
+        const form = document.getElementById('registrationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const message = document.getElementById('message');
+
+        // Replace with your Google Apps Script URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywHtpub-jQe06p9A9mlJrE40i3Rqth5T0vD64yf-jU5D9g4l2RoBLGXZfGwn9_k-KK6Q/exec';
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Show loading state
+            submitBtn.disabled = true;
+            loading.style.display = 'flex';
+            message.style.display = 'none';
+
+            try {
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                
+                // Add timestamp
+                data.timestamp = new Date().toISOString();
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                // Since we're using no-cors mode, we can't read the response
+                // Assume success if no error was thrown
+                showMessage('Registration submitted successfully! ⚽', 'success');
+                form.reset();
+                congregationGroup.classList.add('hidden');
+                congregationSelect.removeAttribute('required');
+
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Registration failed. Please try again or contact the organizer.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+
+        function showMessage(text, type) {
+            message.textContent = text;
+            message.className = `message ${type}`;
+            message.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
